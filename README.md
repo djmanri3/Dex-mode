@@ -19,5 +19,7 @@ bash linux.sh
 
 ### Dependens
 https://github.com/Genymobile/scrcpy
+
 https://github.com/farmerbb/Taskbar
+
 https://github.com/farmerbb/SecondScreen
