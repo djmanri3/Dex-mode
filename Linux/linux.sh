@@ -30,16 +30,14 @@ clear
 
 echo "  Desktop to android  "
 echo "- Credits to DJMANRI3  "
+echo "========================="
+echo "=    YouTube CHANEL     ="
+echo "=      ROMS MANRI       ="
+echo "========================="
+echo ""
 echo ""
 echo " ======================= "
 echo "=                       ="
-echo "= - 0 - Prepare device  ="
-echo "= - 1 - Device 1        ="
-echo "= - 2 - Device 2        ="
-echo "=                       ="
-echo " ======================= "
-echo "=                       ="
-echo "= - c - Connect manualy ="
 echo "= - s - Setup           ="
 echo "= - u - usb connection  ="
 echo "= - q - Quit            ="
@@ -48,28 +46,6 @@ echo " =======================  "
 read -p ": " o
 
 case $o in
-	0)
-		echo "- Connect your device... 5 sec"
-		read -p "Press enter... "
-		adb tcpip 5555
-		echo "- Disconect your device..."
-
-	;;
-
-	1)
-		device="192.168.100.17"
-		densitymod="200"
-	;;
-
-	2)
-		device="192.168.100.36"
-		densitymod="120"
-	;;
-
-	c)
-		read -p "IP address: " device
-		read -p "Introduzca una dpi (vacia por defecto): " densitymod
-	;;
 	s)
 		echo "Is necesary: "
 		echo ""
