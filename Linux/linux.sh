@@ -1,4 +1,15 @@
 #! /bin/bash
+function ProgressBar {
+        # Process data
+        let _progress=(${1}*100/${2}*100)/100
+        let _done=(${_progress}*4)/10
+        let _left=40-$_done
+        # Build progressbar string lengths
+        _done=$(printf "%${_done}s")
+        _left=$(printf "%${_left}s")
+
+        printf "\rProgress : [${_done// /#}${_left// /-}] ${_progress}%%"
+}
 
 if [ -f "/bin/scrcpy" ]
 then
@@ -19,11 +30,6 @@ clear
 
 echo "  Desktop to android  "
 echo "- Credits to DJMANRI3  "
-echo ""
-echo "========================="
-echo "=    YouTube CHANEL     ="
-echo "=      ROMS MANRI       ="
-echo "========================="
 echo ""
 echo " ======================= "
 echo "=                       ="
@@ -51,12 +57,12 @@ case $o in
 	;;
 
 	1)
-		device="ip address"
+		device="192.168.100.17"
 		densitymod="200"
 	;;
 
 	2)
-		device="ip address"
+		device="192.168.100.36"
 		densitymod="120"
 	;;
 
@@ -83,27 +89,47 @@ case $o in
 			echo
 			echo "- Activate adb debug in your device and connect usb"
 			read -p "Press enter to continue..."
+			echo
 
-			# adb commands
-			adb install "./SecondScreen-2.9.2.apk"
-			adb install "./Taskbar-6.1.1.apk"
-			adb shell settings put global enablefreeformsupport 1
-			adb shell pm grant com.farmerbb.secondscreen.free android.permission.WRITE_SECURE_SETTINGS
+			end=10
+			for i in {0..10} 
+			do
+				sleep 0.1
+				ProgressBar ${i} ${end}
 
-			echo
-			echo "======================================================================================== "
-			echo "Please open Taskbar and activate MODE WINDOWS FREE and AVANCED OPTIONS REMPLACE LAUNCHER "
-			echo "======================================================================================== "
-			sleep 2
-			echo
-			read -p "- Necesary reboot the device please press enter to reboot.. "
-			adb reboot now
-			echo
+			if [ $i = 3 ]
+			then
+				# adb commands
+				echo
+				adb install "./SecondScreen-2.9.2.apk"
+				adb install "./Taskbar-6.1.1.apk"
+				adb shell settings put global enablefreeformsupport 1
+				adb shell pm grant com.farmerbb.secondscreen.free android.permission.WRITE_SECURE_SETTINGS
+				echo
+			fi
+
+			if [ $i = 5 ]
+			then
+				echo
+				echo
+				echo "======================================================================================== "
+				echo "Please open Taskbar and activate MODE WINDOWS FREE and AVANCED OPTIONS REMPLACE LAUNCHER "
+				echo "======================================================================================== "
+				sleep 2
+				echo
+				read -p "- Necesary reboot the device please press enter to reboot.. " 			
+				adb reboot now
+				echo
+			fi
+			done
+			echo ""
+			echo ""
 			echo "========================================================="
 			echo "When devide is restarted create a profile in SecondScreen"
 			echo "========================================================="
 			echo
 			read -p "- Press enter when device is restarted to try connect..."
+			clear
 		fi	
 	;;
 	u)
@@ -130,18 +156,41 @@ fi
 	echo " ================= "
 	echo " = Conecting...  ="
 	echo " ================= "
+	echo ""
+		
+	end=10
+	for i in {0..10} 
+	do
+		sleep 0.1
+		ProgressBar ${i} ${end}
 
-	echo "====================================================================="
-	echo "if you use taskbar, necesary close all apps, for open apps in windows"
-	echo "====================================================================="
-	echo
 
-	sleep 1
-	adb shell wm density $densitymod
-	adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0
-	adb shell content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:1
+	if [ $i == 5 ]
+	then
+		echo ""
+		adb shell wm density $densitymod > /dev/null
+		adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0 > /dev/null
+		adb shell content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:1 > /dev/null
+		adb shell am kill-all
+		echo ""
+	fi
+	if [ $i == 8 ]
+	then
+		echo ""
+		echo ""
+		echo "====================================================================="
+		echo "if you use taskbar, necesary close all apps, for open apps in windows"
+		echo "====================================================================="
+		echo ""
+		echo ""
+	fi
+	
+	done
 
-	scrcpy -S &> /dev/tty2
+	echo ""
+	echo ""
+	scrcpy -S > /dev/null
+	#scrcpy > /dev/null
 
 	adb shell wm density reset
 	adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:1
