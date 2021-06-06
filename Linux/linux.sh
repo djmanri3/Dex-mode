@@ -25,19 +25,24 @@ else
 	sudo apt update && sudo apt install android-tools-adb
 fi
 
-sleep 1
+if [ -f "/bin/vlc"  ]
+then
+        echo "- VLC is installed"
+else
+        sudo apt update && sudo apt install vlc
+fi
+
+
+
+sleep 0.5
 clear
 
 echo "  Desktop to android  "
 echo "- Credits to DJMANRI3  "
-echo "========================="
-echo "=    YouTube CHANEL     ="
-echo "=      ROMS MANRI       ="
-echo "========================="
-echo ""
 echo ""
 echo " ======================= "
 echo "=                       ="
+echo "= - c - Connect manualy ="
 echo "= - s - Setup           ="
 echo "= - u - usb connection  ="
 echo "= - q - Quit            ="
@@ -46,6 +51,10 @@ echo " =======================  "
 read -p ": " o
 
 case $o in
+	c)
+		read -p "IP address: " device
+		read -p "Introduzca una dpi (vacia por defecto): " densitymod
+	;;
 	s)
 		echo "Is necesary: "
 		echo ""
@@ -81,9 +90,16 @@ case $o in
 				adb install "./Taskbar-6.1.1.apk"
 				adb shell settings put global enablefreeformsupport 1
 				adb shell pm grant com.farmerbb.secondscreen.free android.permission.WRITE_SECURE_SETTINGS
-				echo
 			fi
 
+			if [ $i = 4 ]
+			then
+				cd audio/
+				bash sndcpy
+				cd .. & cd ..
+				echo
+			fi
+	
 			if [ $i = 5 ]
 			then
 				echo
@@ -133,6 +149,7 @@ fi
 	echo " = Conecting...  ="
 	echo " ================= "
 	echo ""
+	clear
 		
 	end=10
 	for i in {0..10} 
@@ -143,14 +160,41 @@ fi
 
 	if [ $i == 5 ]
 	then
+		echo
+		#adb shell wm density $densitymod > /dev/null
+	
+		# audio	
+		adb forward tcp:2280 localabstract:sndcpy
+		adb shell am start com.rom1v.sndcpy/.MainActivity
+		clear
+	fi
+	if [ $i == 6 ]
+	then
 		echo ""
-		adb shell wm density $densitymod > /dev/null
+		echo ""
+		echo " ========================================================== "
+		read -p "= Please press start cast  in your phone and press enter... ="
+		nohup cvlc -Idummy --demux rawaud --network-caching=50 --play-and-exit tcp://localhost:2280 &
+	fi
+	if [ $i == 7 ]
+	then
+		clear
+		#sleep 1
 		adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0 > /dev/null
 		adb shell content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:1 > /dev/null
 		adb shell am kill-all
-		echo ""
+		adb shell input keyevent 164
 	fi
-	if [ $i == 8 ]
+
+	if [ $i == 9 ]
+	then
+		nohup scrcpy -S &
+		echo ""
+		clear
+	fi
+
+
+	if [ $i == 10 ]
 	then
 		echo ""
 		echo ""
@@ -163,13 +207,19 @@ fi
 	
 	done
 
-	echo ""
-	echo ""
-	scrcpy -S > /dev/null
+
+	echo
+	echo " ============================== "
+	read -p "= Press enter to disconnect... ="
 	#scrcpy > /dev/null
+
+	#adb shell am start com.rom1v.sndcpy/.MainActivity
 
 	adb shell wm density reset
 	adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:1
+	sleep 1
+	adb shell input keyevent 164
 
 
 	adb kill-server
+	rm -rf nohup.out
