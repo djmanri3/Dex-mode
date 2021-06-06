@@ -11,12 +11,10 @@
 
 ### Windows
 
-Download only Windows folder
 Execute desktop.bat
 
 ### Linux
 
-Download all
 bash linux.sh
 
 ### Dependens
