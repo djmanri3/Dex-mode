@@ -12,10 +12,12 @@
 ### Windows
 
 Execute desktop.bat
+select option Setup
 
 ### Linux
 
 bash linux.sh
+select option Setup
 
 ### Dependens
 Scrcpy: https://github.com/Genymobile/scrcpy
